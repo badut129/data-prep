@@ -20,3 +20,6 @@ To lower case
 
     python toLower -i 02-noStopwords.txt -o 03-lowerCase.txt
 
+Print word frequency
+
+    python wordFreq -i 03-lowerCase.txt

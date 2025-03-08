@@ -2,6 +2,7 @@ import shlex
 import sys
 import re # regular expressions
 import argparse
+from collections import Counter
 
 def lowercase(inFile, outFile):
   print("Lowercasing %s to %s" % (inFile, outFile))
@@ -35,6 +36,14 @@ def removeChaptHeadings(inFile, outFile):
     with open(outFile, "w") as o:
       o.write(re.sub(r"\n\n[^\n]+\n[^\n]+\n\n", "\n", f.read()))
 
+def word_frequency(inFile):
+    with open(inFile, 'r') as file:
+        text = file.read()
+        words = re.findall(r'\b\w+\b', text.lower())
+        frequency = Counter(words)
+        return frequency.most_common()
+
+
 def main() -> int:
   args = shlex.join(sys.argv)
   print(args)
@@ -59,6 +68,9 @@ def main() -> int:
   chaptheadingParser.add_argument("-i", "--input", required=True, help="input file")
   chaptheadingParser.add_argument("-o", "--output", required=True, help="output file")
 
+  wordFreqParser = subparsers.add_parser('wordFreq', help='get word frequency')
+  wordFreqParser.add_argument("-i", "--input", required=True, help="input file")
+
   parser.print_help()
 
   args = parser.parse_args()
@@ -74,6 +86,9 @@ def main() -> int:
 
   if(args.operation == "rmChaptHeadings"):
     removeChaptHeadings(args.input, args.output)
+
+  if(args.operation == "wordFreq"):
+    print(word_frequency(args.input))
 
   return 0
 
